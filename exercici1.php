@@ -43,16 +43,25 @@ if (isset($_POST['SENTIT'])) {
     $sentit = $_POST['SENTIT'];
 }
 
+$filtra = "";
+$textcerca = (isset($_POST['TEXTCERCA']) ? $_POST['TEXTCERCA'] : '');
+if ($textcerca <> '') {
+    $filtra = " where ID_AUT = '$textcerca' OR NOM_AUT like '%$textcerca%' ";
+}
 
-$query = "SELECT ID_AUT,NOM_AUT from AUTORS";
+$query = "SELECT ID_AUT,NOM_AUT from AUTORS $filtra";
 $query .= " ORDER BY $orderby $sentit limit 20";
 
 if ($cursor = $mysqli->query($query) or DIE($query)) {
 
 
-    echo '<div class="row">';
+
     echo '<div class="col-md-6">';
     echo '<div class="table-responsive-sm">';
+    echo "<form method='post' action='#'>";
+    echo "<input type='text' name='TEXTCERCA' value='$textcerca'>";
+    echo "<input type='submit' value='Cercar'>";
+    echo "</form>";
     echo '<table class="table table-sm table-hover table-bordered table-dark">';
     echo '<caption>LLista de Autors</caption>';
     if ($sentit == 'ASC') {
@@ -60,7 +69,7 @@ if ($cursor = $mysqli->query($query) or DIE($query)) {
     } else {
         $sentit = 'ASC';
     }
-    
+
     echo '<thead class="thead-light">';
     echo '<tr>';
     echo "<th>";
@@ -76,9 +85,13 @@ if ($cursor = $mysqli->query($query) or DIE($query)) {
     echo "<input type='hidden' name='ORDERBY' value='NOM_AUT'>";
     echo "<input class='btn btn-secondary' type='submit' value='Nom AUTOR'></th>";
     echo "</form>";
+    echo "     ";
+    echo "</form>";
     echo "</th>";
     echo "</tr>";
     echo "</thead>";
+
+
 
     while ($reg = $cursor->fetch_assoc()) {
         echo '<tbody>';
