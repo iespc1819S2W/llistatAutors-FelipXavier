@@ -11,7 +11,7 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
 </head>
-<body class="bg-light text-dark">
+<body class="container">
 
 <?php
 $servername = "localhost";
@@ -62,19 +62,50 @@ $posiciodarrer = $totalpagines * $files_per_pagina;
 $query = "SELECT ID_AUT,NOM_AUT from AUTORS $filtra";
 $query .= " ORDER BY $orderby $sentit LIMIT $posicio,$files_per_pagina";
 
+if(isset($_POST['Borrar'])){
+
+    $codi = $_POST['Borrar'];
+    print_r($_POST);
+    $sql="DELETE FROM AUTORS WHERE ID_AUT= $codi";
+    $cursor = $mysqli->query($sql) or die('Error query' . $sql);
+
+}
+
+
 if ($cursor = $mysqli->query($query) or DIE($query)) {
 
-    echo '<div class="col-md-9">';
+    echo '<div class="col-md-12">';
     echo "<H6>CONSULTA LLISTA DE AUTORS</H6>";
+
     echo "<form method='post' action='#'>";
+    echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=0' class='btn btn-secondary btn-sm' role='button'>
+<<</a>&nbsp;&nbsp;";
+    $prior = $posicio - $files_per_pagina;
+    if ($prior < 0) {
+        $prior = 0;
+    }
+    echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$prior' class='btn btn-secondary btn-sm' role='button'><</a>&nbsp;&nbsp;";
+    $next = $posicio + $files_per_pagina;
+    if ($next > $posiciodarrer) {
+        $next = $posiciodarrer;
+    }
+    echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$next' class='btn btn-secondary btn-sm' role='button'>></a>&nbsp;&nbsp;";
+    $last = $posiciodarrer;
+    echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$last' class='btn btn-secondary btn-sm' role=\"button\">>></a>&nbsp;&nbsp;";
+    echo '<caption>LLista de Autors</caption>';
+    echo " ";
+    $pagina=$posicio/$files_per_pagina;
+    echo "Pagines $pagina / $totalpagines Registres $totalregistres";
+    echo "  ";
     echo "<input type='text' size='35px' placeholder='ID o Nom Autor' name='TEXTCERCA' value='$textcerca'>";
     echo "  ";
     echo "<input class='btn btn-secondary btn-xs' type='submit' value='Cercar'>";
-
     echo "</form>";
 
+
     echo '<div class="table-responsive-sm">';
-    echo '<table class="table table-sm table-hover table-bordered table-dark">';
+
+    echo '<table class="table table-sm table-hover table-bordered table-dark table-sm">';
 
 
     if ($sentit == 'ASC') {
@@ -88,13 +119,21 @@ if ($cursor = $mysqli->query($query) or DIE($query)) {
     echo "<form method='post' action='#'>";
     echo "<input type='hidden' name='SENTIT' value='$sentit'>";
     echo "<input type='hidden' name='ORDERBY' value='ID_AUT'>";
-    echo "<input class='btn btn-secondary btn-xs' type='submit' value='ID'></th>";
+    echo "<input type='hidden' name='TEXTCERCA' value='$textcerca'>";
+
+    echo "<input class='btn btn-secondary btn-sm' type='submit' value='ID'></th>";
     echo "</form>";
     echo "<th>";
     echo "<form method='post' action='#'>";
     echo "<input type='hidden' name='SENTIT' value='$sentit'>";
     echo "<input type='hidden' name='ORDERBY' value='NOM_AUT'>";
-    echo "<input class='btn btn-secondary btn-xs' type='submit' value='Nom AUTOR'>";
+    echo "<input type='hidden' name='TEXTCERCA' value='$textcerca'>";
+
+    echo "<input class='btn btn-secondary btn-sm' type='submit' value='Nom AUTOR'>";
+    echo "<th>";
+    echo "</form>";
+    echo "<form method='post' action='#'>";
+    echo "<input class='btn btn-secondary btn-sm' type='submit' value='Introdueix Autor'>";
     echo "</th>";
     echo "</form>";
     echo "</thead>";
@@ -110,39 +149,28 @@ if ($cursor = $mysqli->query($query) or DIE($query)) {
         echo $reg['NOM_AUT'];
         echo '</td>';
         echo "<td>";
-        echo "<button class='btn btn-danger btn-xs' type='submit' form='formulari' name='Borrar' value='{$reg['ID_AUT']}'>
+        echo "<form method='post' action='#'>";
+        echo "<input type='hidden' name='SENTIT' value='$sentit'>";
+        echo "<input type='hidden' name='ORDERBY' value='$orderby'>";
+        echo "<input type='hidden' name='TEXTCERCA' value='$textcerca'>";
+        echo "<button class='btn btn-danger btn-sm' type='submit' name='Borrar' value='{$reg['ID_AUT']}'>
 Borrar</button>";
-        echo "<button class='btn btn-success btn-xs' type='submit' form='formulari' name='Edicio' value='{$reg['ID_AUT']}'>
-Edicio</button></td>";
+        echo "<button class='btn btn-success btn-sm' type='submit' name='Edicio' value='{$reg['ID_AUT']}'>
+Edicio</button>";
+        echo "</form>";
+        echo "</td>";
         echo '</tr>';
         echo '</tbody>';
     }
 }
 echo '</table>';
-
-echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=0' class='btn btn-secondary btn-xs' role='button'>
-<<</a>&nbsp;&nbsp;";
-$prior = $posicio - $files_per_pagina;
-if ($prior < 0) {
-    $prior = 0;
-}
-echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$prior' class='btn btn-secondary btn-xs' role='button'><</a>&nbsp;&nbsp;";
-$next = $posicio + $files_per_pagina;
-if ($next > $posiciodarrer) {
-    $next = $posiciodarrer;
-}
-echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$next' class='btn btn-secondary btn-xs' role='button'>></a>&nbsp;&nbsp;";
-$last = $posiciodarrer;
-echo "<a href='exercici1.php?ORDREBY=$orderby&SENTIT=$sentit&TEXTCERCA=$textcerca&POSICIO=$last' class='btn btn-secondary btn-xs' role=\"button\">>></a>&nbsp;&nbsp;";
-echo '<caption>LLista de Autors</caption>';
-echo " ";
-$pagina=$posicio/$files_per_pagina;
-echo "$pagina / $totalpagines";
 echo "</div>";
 echo '</div>';
 echo '</div>';
 
-
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
 ?>
 
 
