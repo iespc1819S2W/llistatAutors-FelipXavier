@@ -63,7 +63,7 @@ if (isset($_POST['ordenar'])) {
 if (isset($_POST['altaAutor'])) {
     $nomAltaAutor = connectDB()->real_escape_string($_POST['NomAltaAutor']);
     $altaPaisAutor= connectDB()->real_escape_string($_POST['paisos']);
-    $sql = "INSERT INTO AUTORS (ID_AUT, NOM_AUT, FK_NACIONALITAT) VALUES ((select max(ID_AUT)+1 from AUTORS as ID),'$nomAltaAutor', '$altaPaisAutor' )";
+    $sql = "INSERT INTO AUTORS (ID_AUT, NOM_AUT, FK_NACIONALITAT) VALUES ((select max(ID_AUT)+1 from AUTORS as ID),'$nomAltaAutor', ".datanull($altaPaisAutor)." )";
     $cursor = connectDB()->query($sql) or die('Error query' . $sql);
 
 }
@@ -75,7 +75,7 @@ if (isset($_POST['Guardar'])) {
     $paisEditat= connectDB()->real_escape_string($_POST['paisos']);
     $codiEdicio = $_POST['Guardar'];
     print_r($_POST);
-    $sql = "UPDATE AUTORS SET NOM_AUT = '$nomEditat', FK_NACIONALITAT = '$paisEditat' WHERE ID_AUT =$codiEdicio";
+    $sql = "UPDATE AUTORS SET NOM_AUT = '$nomEditat', FK_NACIONALITAT = ".datanull($paisEditat)." WHERE ID_AUT =$codiEdicio";
     $cursor = connectDB()->query($sql) or die('Error query' . $sql);
 
 }
@@ -164,7 +164,7 @@ if ($cursor = connectDB()->query($query) or DIE($query)) {
         echo "<th>";
         echo "NACIONALITAT";
         echo " ";
-        echo menu_desplegable('paisos', false, 'Introdueix un País'); // POSAR SELECTOR DE NACILATITAT
+        echo menu_desplegable('paisos', true, ' '); // POSAR SELECTOR DE NACILATITAT
         echo "</th>";
         echo "<th>";
         echo "<button class='btn btn-success btn-sm' type='submit' name='altaAutor'>
@@ -224,7 +224,7 @@ Cancelar</button>";
             echo "<input type='text' size='35px' placeholder='Nom Autor' name='NomEditat' value='{$reg['NOM_AUT']}'>";
             echo '</td>';
             echo '<td>';
-            echo menu_desplegable('paisos', false, 'Introdueix un País'); // POSAR SELECTOR DE NACILATITAT
+            echo menu_desplegable('paisos', true, ' '); // POSAR SELECTOR DE NACILATITAT
             echo '</td>';
             echo '<td>';
             echo "<button class='btn btn-success btn-sm' type='submit' name='Guardar' value='{$reg['ID_AUT']}'>
@@ -274,11 +274,12 @@ echo "</pre>";
 
 
 
-function menu_desplegable($nombre, $opdcioBuida=TRUE,$textebuit="Tria una Opció"){
-    echo "<select name='$nombre' required>";
+function menu_desplegable($nombre, $opdcioBuida=FALSE,$textebuit="Tria una Opció"){
+    echo "<select name='$nombre'>";
+    $null=NULL;
     if ($opdcioBuida){
 
-        echo"<OPTION VALUE=>$textebuit</OPTION>";
+        echo"<OPTION VALUE=$null>$textebuit</OPTION>";
     }
 
     connectDB();
@@ -293,6 +294,13 @@ function menu_desplegable($nombre, $opdcioBuida=TRUE,$textebuit="Tria una Opció
     echo "</select>";
 }
 
+function datanull($data){
+    if($data != ''){
+        return "'$data'";
+    } else {
+        return "NULL";
+    }
+}
 
 ?>
 
