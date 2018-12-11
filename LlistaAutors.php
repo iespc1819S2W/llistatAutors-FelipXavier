@@ -50,7 +50,7 @@ if (isset($_POST['Guardar'])) {
     $nomEditat = connectDB()->real_escape_string($_POST['NomEditat']);
     $paisEditat= connectDB()->real_escape_string($_POST['paisos']);
     $codiEdicio = $_POST['Guardar'];
-    print_r($_POST);
+    /*print_r($_POST);*/
     $sql = "UPDATE AUTORS SET NOM_AUT = '$nomEditat', FK_NACIONALITAT = ".datanull($paisEditat)." WHERE ID_AUT =$codiEdicio";
     $cursor = connectDB()->query($sql) or die('Error query' . $sql);
 
