@@ -14,33 +14,9 @@
 <body class="container">
 
 <?php
-
-function connectDB(){
-
-    $servername = "localhost";
-    $username = "root";
-    $password = "lokomartin82";
-    $basedades = "biblioteca";
-
-
-// Create connection
-    $mysqli = new mysqli($servername, $username, $password, $basedades);
-
-
-// Check connection
-    if ($mysqli->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-//echo "Connected successfully";
-
-    $mysqli->set_charset("utf8");
-
-    return $mysqli;
-}
+include("funcions.php");
 
 $conexio=connectDB();
-
-
 
 $orderby = 'ID_AUT';
 $sentit = 'ASC';
@@ -83,7 +59,7 @@ if (isset($_POST['Guardar'])) {
 if (isset($_POST['Borrar'])) {
 
     $codi = $_POST['Borrar'];
-    print_r($_POST);
+    /*print_r($_POST);*/
     $sql = "DELETE FROM AUTORS WHERE ID_AUT= $codi";
     $cursor = connectDB()->query($sql) or die('Error query' . $sql);
 
@@ -164,7 +140,7 @@ if ($cursor = connectDB()->query($query) or DIE($query)) {
         echo "<th>";
         echo "NACIONALITAT";
         echo " ";
-        echo menu_desplegable('paisos', true, ' '); // POSAR SELECTOR DE NACILATITAT
+        echo menu_desplegable('paisos', true, 'Elegeix una Nacionalitat...'); // POSAR SELECTOR DE NACILATITAT
         echo "</th>";
         echo "<th>";
         echo "<button class='btn btn-success btn-sm' type='submit' name='altaAutor'>
@@ -224,7 +200,7 @@ Cancelar</button>";
             echo "<input type='text' size='35px' placeholder='Nom Autor' name='NomEditat' value='{$reg['NOM_AUT']}'>";
             echo '</td>';
             echo '<td>';
-            echo menu_desplegable('paisos', true, ' '); // POSAR SELECTOR DE NACILATITAT
+            echo menu_desplegable('paisos', true, 'Tria una Opció...'); // POSAR SELECTOR DE NACILATITAT
             echo '</td>';
             echo '<td>';
             echo "<button class='btn btn-success btn-sm' type='submit' name='Guardar' value='{$reg['ID_AUT']}'>
@@ -265,42 +241,12 @@ echo "</div>";
 echo '</div>';
 echo '</div>';
 
+/*
 echo "<pre>";
 print_r($_POST);
 echo "</pre>";
+*/
 
-
-
-
-
-
-function menu_desplegable($nombre, $opdcioBuida=FALSE,$textebuit="Tria una Opció"){
-    echo "<select name='$nombre'>";
-    $null=NULL;
-    if ($opdcioBuida){
-
-        echo"<OPTION VALUE=$null>$textebuit</OPTION>";
-    }
-
-    connectDB();
-
-    $sql = "SELECT *  from NACIONALITATS";
-    $cursor = connectDB()->query($sql) or die('Error query' . $sql);
-    while ($reg = $cursor->fetch_assoc()) {
-
-        echo '<option value="'.$reg['NACIONALITAT'].'">'.$reg['NACIONALITAT'].'</option>';
-
-    }
-    echo "</select>";
-}
-
-function datanull($data){
-    if($data != ''){
-        return "'$data'";
-    } else {
-        return "NULL";
-    }
-}
 
 ?>
 
